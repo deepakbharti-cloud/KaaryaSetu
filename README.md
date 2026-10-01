@@ -17,7 +17,7 @@
 
 - **Backend:** Python, Django (plain Django — no DRF)
 - **Database:** SQLite (dev) — MySQL planned for production
-- **Frontend:** Django Templates, HTML5, Tailwind CSS (CDN)
+- **Frontend:** Django Templates, HTML5, Tailwind CSS (CDN) javascript
 - **Auth:** Django's built-in session authentication with a custom User model
 
 ## 📁 Project Structure
