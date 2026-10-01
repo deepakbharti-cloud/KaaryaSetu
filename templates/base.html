@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KaaryaSetu - Apne area ka kaam-wala dhoondo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <!-- TOP NAVBAR -->
+    <header class="bg-white border-b sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600 shrink-0">KaaryaSetu</a>
+
+            <!-- Search bar (worker / area search) -->
+            <form method="get" action="{% url 'worker_list' %}" class="flex-1 flex items-center border rounded-full overflow-hidden">
+                <input type="text" name="area" placeholder="Apna area/city likho..."
+                       class="flex-1 px-4 py-2 outline-none text-sm">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 text-sm">🔍 Search</button>
+            </form>
+
+            <!-- Right side: Login/Register or User menu -->
+            <div class="flex items-center gap-3 shrink-0 text-sm">
+                {% if user.is_authenticated %}
+                    {% if user.role == 'customer' %}
+                        <a href="{% url 'my_bookings' %}" class="hover:text-blue-600">Meri Bookings</a>
+                    {% elif user.role == 'worker' %}
+                        <a href="{% url 'worker_dashboard' %}" class="hover:text-blue-600">Dashboard</a>
+                    {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="hover:text-blue-600">Admin Dashboard</a>
+                    {% endif %}
+                    <span class="text-gray-600">Hi, {{ user.username }}</span>
+                    <a href="{% url 'logout' %}" class="hover:text-blue-600">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-blue-600">Login</a>
+                    <a href="{% url 'register' %}"
+                       class="border-2 border-blue-600 text-blue-600 font-semibold px-4 py-1.5 rounded-full hover:bg-blue-50">
+                        + Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- CATEGORY CHIPS ROW -->
+        <div class="max-w-6xl mx-auto px-4 pb-3 flex gap-3 overflow-x-auto relative">
+
+            <!-- ALL CATEGORIES button - isko click karne se mega-menu khulega -->
+            <button onclick="document.getElementById('categoryMegaMenu').classList.toggle('hidden')"
+                    class="whitespace-nowrap bg-blue-600 text-white rounded-full px-4 py-1.5 text-sm font-semibold flex items-center gap-2">
+                ☰ All Categories
+            </button>
+
+            {% for cat in nav_categories %}
+                <a href="{% url 'worker_list' %}?category={{ cat.id }}"
+                   class="whitespace-nowrap border rounded-full px-4 py-1.5 text-sm hover:bg-gray-100">
+                    {{ cat.icon }} {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <!-- MEGA MENU - jab "All Categories" click karo tab khulega, jaise OLX mein hota hai -->
+        <div id="categoryMegaMenu" class="hidden absolute left-0 right-0 bg-white border-t shadow-xl z-30">
+            <div class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+                {% for cat in nav_categories %}
+                    <div>
+                        <!-- Category heading -->
+                        <a href="{% url 'worker_list' %}?category={{ cat.id }}"
+                           class="flex items-center gap-2 font-bold text-gray-900 hover:text-blue-600 mb-2 pb-2 border-b">
+                            <span class="text-xl">{{ cat.icon }}</span>
+                            <span>{{ cat.name }}</span>
+                        </a>
+
+                        <!-- Subcategories, jaise OLX mein Cars ke niche "Spare Parts", "Bicycles" hote hain -->
+                        <ul class="space-y-1 text-sm text-gray-600">
+                            {% for sub in cat.subcategories.all %}
+                                <li>
+                                    <a href="{% url 'worker_list' %}?category={{ cat.id }}&sub={{ sub.id }}"
+                                       class="hover:text-blue-600">{{ sub.name }}</a>
+                                </li>
+                            {% empty %}
+                                <li class="text-gray-400">Jald aa raha hai</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% empty %}
+                    <p class="col-span-4 text-gray-500 text-sm">Abhi koi category nahi hai.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded mb-4">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 mt-10">
+        <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+            <div>
+                <h3 class="text-white font-bold mb-3">KaaryaSetu</h3>
+                <p>Find trusted workers in your area and get the job done — in just one click.</p>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-3">Categories</h3>
+                <ul class="space-y-1">
+                    {% for cat in nav_categories|slice:":5" %}
+                        <li><a href="{% url 'worker_list' %}?category={{ cat.id }}" class="hover:text-white">{{ cat.name }}</a></li>
+                    {% empty %}
+                        <li>Coming soon</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-3">For Workers</h3>
+                <ul class="space-y-1">
+                    <li><a href="{% url 'register' %}" class="hover:text-white">Sign up as a worker</a></li>
+                    <li><a href="{% url 'login' %}" class="hover:text-white">Login</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-3">Help</h3>
+                <ul class="space-y-1">
+                    <li><a href="{% url 'about' %}" class="hover:text-white">About Us</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:text-white">Contact</a></li>
+                    <li><a href="#" class="hover:text-white">FAQs</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 text-center text-xs py-4">
+            &copy; {% now "Y" %} KaaryaSetu. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP BUTTON (jab niche scroll karo tab dikhega) -->
+    <button id="backToTopBtn"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            class="hidden fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 z-30">
+        ↑ Back to top
+    </button>
+
+    <script>
+        // Jab user 300px se zyada scroll kare, tab hi button dikhao
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('hidden');
+            } else {
+                backToTopBtn.classList.add('hidden');
+            }
+        });
+
+        // Mega menu ke bahar click karne pe usko band kar do
+        document.addEventListener('click', function (event) {
+            const menu = document.getElementById('categoryMegaMenu');
+            const isClickInsideMenu = menu.contains(event.target);
+            const isClickOnButton = event.target.closest('button')?.onclick?.toString().includes('categoryMegaMenu');
+
+            if (!isClickInsideMenu && !isClickOnButton && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>

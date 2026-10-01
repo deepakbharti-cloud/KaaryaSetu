@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
+
+<!-- STAT CARDS -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white border rounded-xl p-5 text-center">
+        <p class="text-3xl font-bold text-blue-600">{{ total_workers }}</p>
+        <p class="text-sm text-gray-600 mt-1">Total Workers</p>
+    </div>
+    <div class="bg-white border rounded-xl p-5 text-center">
+        <p class="text-3xl font-bold text-green-600">{{ total_customers }}</p>
+        <p class="text-sm text-gray-600 mt-1">Total Customers</p>
+    </div>
+    <div class="bg-white border rounded-xl p-5 text-center">
+        <p class="text-3xl font-bold text-purple-600">{{ total_bookings }}</p>
+        <p class="text-sm text-gray-600 mt-1">Total Bookings</p>
+    </div>
+    <div class="bg-white border rounded-xl p-5 text-center">
+        <p class="text-3xl font-bold text-orange-600">{{ total_categories }}</p>
+        <p class="text-sm text-gray-600 mt-1">Categories</p>
+    </div>
+</div>
+
+<!-- RECENT BOOKINGS -->
+<h2 class="text-xl font-bold mb-3">Recent Bookings</h2>
+<div class="bg-white border rounded-xl divide-y">
+    {% for booking in recent_bookings %}
+        <div class="p-4 flex justify-between items-center text-sm">
+            <div>
+                <p class="font-semibold">{{ booking.customer.username }} → {{ booking.worker.user.username }}</p>
+                <p class="text-gray-500">{{ booking.service_date }}</p>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs bg-gray-100">{{ booking.status }}</span>
+        </div>
+    {% empty %}
+        <p class="p-4 text-gray-500">Abhi koi booking nahi hai.</p>
+    {% endfor %}
+</div>
+
+<p class="mt-6 text-sm text-gray-500">
+    Categories/Workers manage karne ke liye <a href="/admin/" class="text-blue-600 underline">Django Admin Panel</a> use karo.
+</p>
+{% endblock %}

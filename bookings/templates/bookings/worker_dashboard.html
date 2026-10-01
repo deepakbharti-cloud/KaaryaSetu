@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Booking Requests</h1>
+<div class="space-y-3">
+    {% for booking in bookings %}
+        <div class="border rounded p-4 bg-white">
+            <p class="font-bold">{{ booking.customer.username }} - {{ booking.service_date }}</p>
+            <p class="text-sm text-gray-600">{{ booking.description }}</p>
+            <p class="text-sm">Status: <span class="font-semibold">{{ booking.status }}</span></p>
+
+            {% if booking.status == 'pending' %}
+                <a href="{% url 'update_booking_status' booking.id 'accepted' %}" class="text-green-600 underline text-sm mr-3">Accept</a>
+                <a href="{% url 'update_booking_status' booking.id 'cancelled' %}" class="text-red-600 underline text-sm">Cancel</a>
+            {% elif booking.status == 'accepted' %}
+                <a href="{% url 'update_booking_status' booking.id 'completed' %}" class="text-blue-600 underline text-sm">Mark Completed</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Koi booking request nahi hai abhi.</p>
+    {% endfor %}
+</div>
+{% endblock %}

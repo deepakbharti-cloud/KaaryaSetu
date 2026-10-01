@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-2">{{ worker.user.username }}</h1>
+<p class="text-gray-600 mb-4">{{ worker.category }} | {{ worker.area }} | ₹{{ worker.hourly_rate }}/hr</p>
+<p class="mb-4">{{ worker.bio }}</p>
+<p class="mb-4">⭐ Rating: {{ worker.avg_rating }}</p>
+
+{% if user.is_authenticated and user.role == 'customer' %}
+    <a href="{% url 'create_booking' worker.id %}" class="bg-green-600 text-white px-4 py-2 rounded">Book Karo</a>
+{% endif %}
+
+<h2 class="text-xl font-bold mt-8 mb-2">Reviews</h2>
+{% for booking in bookings_with_reviews %}
+    <div class="border-b py-2">
+        <p>⭐ {{ booking.review.rating }} - {{ booking.review.comment }}</p>
+    </div>
+{% empty %}
+    <p>Abhi tak koi review nahi hai.</p>
+{% endfor %}
+{% endblock %}
