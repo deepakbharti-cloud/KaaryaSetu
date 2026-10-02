@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KaaryaSetu - Apne area ka kaam-wala dhoondo</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
@@ -46,7 +48,7 @@
         </div>
 
         <!-- CATEGORY CHIPS ROW -->
-        <div class="max-w-6xl mx-auto px-4 pb-3 flex gap-3 overflow-x-auto relative">
+        <div class="max-w-6xl mx-auto px-4 pb-3 flex gap-3 overflow-x-auto relative no-scrollbar">
 
             <!-- ALL CATEGORIES button - isko click karne se mega-menu khulega -->
             <button onclick="document.getElementById('categoryMegaMenu').classList.toggle('hidden')"
