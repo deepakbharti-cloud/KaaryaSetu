@@ -204,7 +204,7 @@ Open **http://127.0.0.1:8000/** for the app and **http://127.0.0.1:8000/admin/**
 
 ## 👨‍💻 Author
 
-**Deepak Bharti**
+**Deepak Bharti   **
 
 - 🌐 Portfolio: [deepakbharti.github.io](https://deepakbharti.github.io)
 - 🐙 GitHub: [@deepakbharti-cloud](https://github.com/deepakbharti-cloud)
